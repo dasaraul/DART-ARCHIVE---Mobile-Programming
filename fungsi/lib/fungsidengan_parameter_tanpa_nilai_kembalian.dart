@@ -7,6 +7,6 @@ void dataMhs() {
   String npm = '237006516058';
   String prodi = 'Sistem Informasi';
   print('Nama Lengkap : $nama');
-  print('Nama Lengkap : $npm');
-  print('Nama Lengkap : $prodi');
+  print('NPM          : $npm');
+  print('Program Studi: $prodi');
 }

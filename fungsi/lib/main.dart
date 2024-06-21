@@ -173,7 +173,10 @@ class _FunctionDetailPageState extends State<FunctionDetailPage> {
     String npm = '237006516058';
     String prodi = 'Sistem Informasi';
     setState(() {
-      _output = 'Nama Lengkap : $nama $npm $prodi';
+      // _output = 'Nama Lengkap : $nama $npm $prodi';
+      _output = 'Nama Lengkap : $nama\n'
+                'NPM          : $npm\n'
+                'Program Studi: $prodi';
     });
   }
 
@@ -332,7 +335,10 @@ void dataMhs() {
   String nama = 'Muhammad Akbar';
   String npm = '237006516058';
   String prodi = 'Sistem Informasi';
-  print('Nama Lengkap : \$nama \$npm \$prodi');
+
+  print('Nama Lengkap : \$nama');
+  print('NPM          : \$npm');
+  print('Program Studi: \$prodi');
 }
 ''';
 
