@@ -1,125 +1,409 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Daftar Fungsi Dart',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: FunctionListPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class FunctionListPage extends StatelessWidget {
+  final List<Map<String, String>> functions = [
+    {'name': 'fungsi_anonim_sort.dart', 'code': _fungsiAnonimSort},
+    {'name': 'fungsi_anonim_reduce.dart', 'code': _fungsiAnonimReduce},
+    {'name': 'fungsi_anonim_map.dart', 'code': _fungsiAnonimMap},
+    {
+      'name': 'fungsidengan_parameter_tanpa_nilai_kembalian.dart',
+      'code': _fungsidenganParameterTanpaNilaiKembalian
+    },
+    {
+      'name': 'fungsidengan_parameter_dengan_nilai_kembalian.dart',
+      'code': _fungsidenganParameterDenganNilaiKembalian
+    },
+    {
+      'name': 'fungsi_tanpa_parameter_tanpa_nilai_kembalian.dart',
+      'code': _fungsiTanpaParameterTanpaNilaiKembalian
+    },
+    {
+      'name': 'fungsi_tanpa_parameter_dengan_nilai_kembalian.dart',
+      'code': _fungsiTanpaParameterDenganNilaiKembalian
+    },
+    {'name': 'fungsi_arrow_syntax.dart', 'code': _fungsiArrowSyntax},
+    {'name': 'fungsi_anonim_where.dart', 'code': _fungsiAnonimWhere},
+  ];
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Daftar Fungsi Dart'),
+      ),
+      body: ListView.builder(
+        itemCount: functions.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(functions[index]['name']!),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FunctionDetailPage(
+                    functionName: functions[index]['name']!,
+                    functionCode: functions[index]['code']!,
+                    functionIndex: index,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class FunctionDetailPage extends StatefulWidget {
+  final String functionName;
+  final String functionCode;
+  final int functionIndex;
 
-  void _incrementCounter() {
+  FunctionDetailPage(
+      {required this.functionName,
+      required this.functionCode,
+      required this.functionIndex});
+
+  @override
+  _FunctionDetailPageState createState() => _FunctionDetailPageState();
+}
+
+class _FunctionDetailPageState extends State<FunctionDetailPage> {
+  String _output = '';
+
+  void _runFunction(int index) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _output = ''; // Reset output before running the function
+    });
+
+    switch (index) {
+      case 0:
+        _runAnonimSort();
+        break;
+      case 1:
+        _runAnonimReduce();
+        break;
+      case 2:
+        _runAnonimMap();
+        break;
+      case 3:
+        _runParameterTanpaNilaiKembalian();
+        break;
+      case 4:
+        _runParameterDenganNilaiKembalian();
+        break;
+      case 5:
+        _runTanpaParameterTanpaNilaiKembalian();
+        break;
+      case 6:
+        _runTanpaParameterDenganNilaiKembalian();
+        break;
+      case 7:
+        _runArrowSyntax();
+        break;
+      case 8:
+        _runAnonimWhere();
+        break;
+      default:
+        _output = 'Fungsi tidak ditemukan';
+    }
+  }
+
+  void _runAnonimSort() {
+    List<int> nums = [1, 2, 3, 4, 5, 6];
+    int jmlNum = nums.reduce((jml, nilai) {
+      return jml + nilai;
+    });
+    setState(() {
+      _output = 'Total nums: $jmlNum';
+    });
+  }
+
+  void _runAnonimReduce() {
+    List<String> buah = [
+      'Apel',
+      'Pisang',
+      'Anggur',
+      'Melon',
+      'Semangka',
+      'Stroberi',
+      'Leci'
+    ];
+
+    buah.sort((awal, akhir) {
+      return akhir.compareTo(awal);
+    });
+
+    setState(() {
+      _output = 'List Buah: $buah';
+    });
+  }
+
+  void _runAnonimMap() {
+    List<int> angka = [2, 4, 6, 8, 10, 12];
+    List<int> listAngkaKuadrat = angka.map((nilai) {
+      return nilai * nilai;
+    }).toList();
+
+    setState(() {
+      _output = 'Hasil Kuadrat: $listAngkaKuadrat';
+    });
+  }
+
+  void _runParameterTanpaNilaiKembalian() {
+    String nama = 'Muhammad Akbar';
+    String npm = '237006516058';
+    String prodi = 'Sistem Informasi';
+    setState(() {
+      _output = 'Nama Lengkap : $nama $npm $prodi';
+    });
+  }
+
+  void _runParameterDenganNilaiKembalian() {
+    int num1 = 7;
+    int num2 = 5;
+    int num3 = 9;
+    int num4 = 2;
+    int result = hasil(num1, num2, num3, num4);
+    setState(() {
+      _output = 'Hasil Nilai Akhir: $result';
+    });
+  }
+
+  int hasil(int nilai1, int nilai2, int nilai3, int nilai4) {
+    int aritmatika =
+        (((nilai1 * nilai2) - nilai3 + nilai4) ~/ 2) + (nilai1 ~/ (nilai4 + 1));
+    return aritmatika;
+  }
+
+  void _runTanpaParameterTanpaNilaiKembalian() {
+    String nick = 'Muhammad';
+    String mid = 'Akbar';
+    String full = 'Nama: $nick $mid';
+    setState(() {
+      _output = full;
+    });
+  }
+
+  void _runTanpaParameterDenganNilaiKembalian() {
+    double avgnilai = nilaiMinimal();
+    setState(() {
+      _output = 'Rata-rata nilai: $avgnilai';
+    });
+  }
+
+  double nilaiMinimal() {
+    double Tugas1 = 95.1;
+    double Tugas2 = 82.7;
+    return (Tugas1 + Tugas2) / 2;
+  }
+
+  void _runArrowSyntax() {
+    double luasL(double r) => 3.14 * r * r;
+    double kelL(double r) => 2 * 3.14 * r;
+    double r = 5;
+    String hasil =
+        'Luas lingkaran dengan r $r adalah ${luasL(r)}\nKeliling lingkaran dengan r $r adalah ${kelL(r)}';
+    setState(() {
+      _output = hasil;
+    });
+  }
+
+  void _runAnonimWhere() {
+    List<int> num = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    Set<int> rndNum = num.toSet();
+    rndNum.add(11);
+    List<int> listnum = rndNum.toList();
+    listnum.remove(5);
+    setState(() {
+      _output = 'Hasil: $listnum';
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.functionName),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Kode:',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                widget.functionCode,
+                style: TextStyle(fontFamily: 'monospace'),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Output:',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(_output, style: TextStyle(fontFamily: 'monospace')),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  _runFunction(widget.functionIndex);
+                },
+                child: Text('Run Function'),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+const String _fungsiAnonimSort = '''
+void main() {
+  List<int> nums = [1, 2, 3, 4, 5, 6];
+  int jmlNum = nums.reduce((jml, nilai) {
+    return jml + nilai;
+  });
+
+  print('Total nums: \$jmlNum');
+}
+''';
+
+const String _fungsiAnonimReduce = '''
+void main() {
+  List<String> buah = [
+    'Apel',
+    'Pisang',
+    'Anggur',
+    'Melon',
+    'Semangka',
+    'Stroberi',
+    'Leci'
+  ];
+
+  buah.sort((awal, akhir) {
+    return akhir.compareTo(awal);
+  });
+
+  print('List Buah: \$buah');
+}
+''';
+
+const String _fungsiAnonimMap = '''
+void main() {
+  List<int> angka = [2, 4, 6, 8, 10, 12];
+  List<int> listAngkaKuadrat = angka.map((nilai) {
+    return nilai * nilai;
+  }).toList();
+
+  print('Hasil Kuadrat: \$listAngkaKuadrat');
+}
+''';
+
+const String _fungsidenganParameterTanpaNilaiKembalian = '''
+void main() {
+  dataMhs();
+}
+
+void dataMhs() {
+  String nama = 'Muhammad Akbar';
+  String npm = '237006516058';
+  String prodi = 'Sistem Informasi';
+  print('Nama Lengkap : \$nama \$npm \$prodi');
+}
+''';
+
+const String _fungsidenganParameterDenganNilaiKembalian = '''
+void main() {
+  int num1 = 7;
+  int num2 = 5;
+  int num3 = 9;
+  int num4 = 2;
+  int result = hasil(num1, num2, num3, num4);
+  print('Hasil Nilai Akhir: \$result');
+}
+
+int hasil(int nilai1, int nilai2, int nilai3, int nilai4) {
+  int aritmatika =
+      (((nilai1 * nilai2) - nilai3 + nilai4) ~/ 2) + (nilai1 ~/ (nilai4 + 1));
+  return aritmatika;
+}
+''';
+
+const String _fungsiTanpaParameterTanpaNilaiKembalian = '''
+void main() {
+  String nick = 'Muhammad';
+  String mid = 'Akbar';
+  BioMhs(nick, mid);
+}
+
+void BioMhs(String nick, String mid) {
+  String full = 'Nama: \$nick \$mid';
+  print(full);
+}
+''';
+
+const String _fungsiTanpaParameterDenganNilaiKembalian = '''
+void main() {
+  double avgnilai = nilaiMinimal();
+  print('Rata-rata nilai: \$avgnilai');
+}
+
+double nilaiMinimal() {
+  double Tugas1 = 95.1;
+  double Tugas2 = 82.7;
+
+  return (Tugas1 + Tugas2) / 2;
+}
+''';
+
+const String _fungsiArrowSyntax = '''
+void main() {
+  double luasL(double r) => 3.14 * r * r;
+
+  double kelL(double r) => 2 * 3.14 * r;
+
+  void hasil(double r) {
+    print('Luas lingkaran dengan r \$r adalah \${luasL(r)}');
+    print('Keliling lingkaran dengan r \$r adalah \${kelL(r)}');
+  }
+
+  hasil(5);
+}
+''';
+
+const String _fungsiAnonimWhere = '''
+void main() {
+  List<int> num = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  Set<int> rndNum = num.toSet();
+  rndNum.add(11);
+  List<int> listnum = rndNum.toList();
+  listnum.remove(5);
+
+  //print out
+  print('Hasil: \$listnum');
+}
+''';
