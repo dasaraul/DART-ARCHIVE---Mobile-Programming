@@ -91,7 +91,7 @@ class _FunctionDetailPageState extends State<FunctionDetailPage> {
 
   void _runFunction(int index) {
     setState(() {
-      _output = ''; // Reset output before running the function
+      _output = '';
     });
 
     switch (index) {
